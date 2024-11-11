@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, g
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc, select
-from sqlalchemy import bindparam
+from sqlalchemy import bindparam, Index
 
 DATABASE = 'sqlite://///Users/maliamarquez/Desktop/cs348/cs348projectBooks.db'
 
@@ -15,17 +15,17 @@ class Book(db.Model):
     __tablename__ = 'Books'
     book_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    author_id = db.Column(db.Integer, db.ForeignKey('Authors.author_id'))
-    genre_id = db.Column(db.Integer, db.ForeignKey('Genres.genre_id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('Authors.author_id'), index=True)
+    genre_id = db.Column(db.Integer, db.ForeignKey('Genres.genre_id'), index=True)
 
 class Author(db.Model):
     __tablename__ = 'Authors'
     author_id = db.Column(db.Integer, primary_key=True)
-    author_name = db.Column(db.String(100))
+    author_name = db.Column(db.String(100), index=True)
 
 class User(db.Model):
     __tablename__ = 'Users'
-    username = db.Column(db.String(100), primary_key=True)
+    username = db.Column(db.String(100), primary_key=True, index=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
@@ -33,14 +33,20 @@ class User(db.Model):
 class Genre(db.Model):
     __tablename__ = 'Genres'
     genre_id = db.Column(db.Integer, primary_key=True)
-    genre = db.Column(db.String(100))
+    genre = db.Column(db.String(100), index=True)
 
 class Bookshelf(db.Model):
     __tablename__ = 'Bookshelf'
     username = db.Column(db.String(100), db.ForeignKey('Users.username'), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('Books.book_id'), primary_key=True)
-    reading_status = db.Column(db.String(100))
-    rating = db.Column(db.Integer)
+    reading_status = db.Column(db.String(100), index=True)
+    rating = db.Column(db.Integer, index=True)
+
+    __table_args__ = (
+        db.Index('user_book_idx', 'username', 'book_id'),
+        db.Index('user_book_idx', 'username', 'reading_status')
+    )
+
 
 """
 report struct {
