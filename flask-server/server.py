@@ -39,12 +39,13 @@ class Bookshelf(db.Model):
     __tablename__ = 'Bookshelf'
     username = db.Column(db.String(100), db.ForeignKey('Users.username'), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('Books.book_id'), primary_key=True)
-    reading_status = db.Column(db.String(100), index=True)
-    rating = db.Column(db.Integer, index=True)
+    reading_status = db.Column(db.String(100))
+    rating = db.Column(db.Integer)
 
     __table_args__ = (
         db.Index('user_book_idx', 'username', 'book_id'),
-        db.Index('user_book_idx', 'username', 'reading_status')
+        db.Index('user_status_idx', 'username', 'reading_status'),
+        db.Index('user_rating_idx', 'username', 'rating')
     )
 
 
