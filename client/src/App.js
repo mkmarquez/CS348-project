@@ -26,6 +26,10 @@ function App() {
     }).then(
       res => res.json()
     ).then(
+      // function for setting drop down lists of books
+      // handleGetList sets "books" to books in users shelf
+      // anytime "books" is changed, this runs to get all books from db then create var
+      // with books that are not in that user's db for them to have the option to add
       bookslist => {
         let alluserbookids = []
         books.forEach(book => {
